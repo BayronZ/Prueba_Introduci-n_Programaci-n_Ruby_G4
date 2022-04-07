@@ -22,7 +22,7 @@ require "uri"
 require "net/http"
 require "json"
 
-#Se define el método request para llamar la api y transformarla al JSON
+#Se define el método request para llamar la api y transformarla a JSON
 
 def request(url)
     url = URI(url)
@@ -37,12 +37,6 @@ def request(url)
 
 
 end
-
-#Se deja en una variable el retorno del metodo request
-data = request("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=kQlIVYebQgP1fwNzdufQ8WkzVqjzt2lHmNoOYg6B")
-
-#Se reducen a 10 los elementos del hash retornado
-data = data["photos"][0..9]
 
 #Se define el método build_web_page para crear la página web con el formato solicitado
 def build_web_page(data2)
@@ -60,8 +54,9 @@ def build_web_page(data2)
         photo["img_src"]
     end
 
+    #se recorren las keys para ingresar la url de las imagenes
     photos.each do |photo|
-        page += "<li><img src=#{photo}></li>\n"
+        page += "\t<li><img src=#{photo}></li>\n"
     end
 
     page += "</ul>\n"
@@ -70,9 +65,17 @@ def build_web_page(data2)
     return page
 end
 
-index_page = build_web_page(data)
+#Se deja en una variable el retorno del metodo request
+data = request("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=kQlIVYebQgP1fwNzdufQ8WkzVqjzt2lHmNoOYg6B")
 
-File.write('Index.html', index_page)
+#Se reducen a 10 los elementos del hash retornado
+data = data["photos"][0..9]
+
+
+
+
+
+File.write('Index.html', build_web_page(data))
 
 
 
